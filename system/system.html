@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visitor Log</title>
+    <style>
+        @page {
+            size: horizontal;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+           
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            margin-top: 5px;
+        }
+        #visitorList {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #0fb87acc; /* Adding a background color with transparency to make text readable */
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        form, h1, h2 {
+            background-color: hwb(107 20% 16% / 0.8); /* Adding a background color with transparency to make text readable */
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visitor Log</h1>
+    <form id="visitorForm">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required><br>
+        
+        <label for="timeIn">Time In:</label>
+        <input type="time" id="timeIn" name="timeIn" required><br>
+        
+        <label for="timeOut">Time Out:</label>
+        <input type="time" id="timeOut" name="timeOut"><br>
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        
+        <label for="purpose">Purpose of Visit:</label>
+        <input type="text" id="purpose" name="purpose" required><br>
+        
+        <label for="contact">Contact Information:</label>
+        <input type="text" id="contact" name="contact" required><br>
+        
+        <label for="id">ID Number:</label>
+        <input type="text" id="id" name="id" required><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Visitor List</h2>
+    <div id="visitorList">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Name</th>
+                    <th>Purpose</th>
+                    <th>Contact</th>
+                    <th>ID Number</th>
+                </tr>
+            </thead>
+            <tbody id="visitorTableBody">
+                <!-- Visitor entries will appear here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.getElementById('visitorForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form values
+            const date = document.getElementById('date').value;
+            const timeIn = document.getElementById('timeIn').value;
+            const timeOut = document.getElementById('timeOut').value;
+            const name = document.getElementById('name').value;
+            const purpose = document.getElementById('purpose').value;
+            const contact = document.getElementById('contact').value;
+            const id = document.getElementById('id').value;
+
+            // Create a visitor object
+            const visitor = {
+                date,
+                timeIn,
+                timeOut,
+                name,
+                purpose,
+                contact,
+                id
+            };
+
+            // Save visitor to local storage
+            let visitors = JSON.parse(localStorage.getItem('visitors')) || [];
+            visitors.push(visitor);
+            localStorage.setItem('visitors', JSON.stringify(visitors));
+
+            // Add visitor to the table
+            addVisitorToTable(visitor);
+
+            // Reset the form
+            document.getElementById('visitorForm').reset();
+        });
+
+        function addVisitorToTable(visitor) {
+            const tableBody = document.getElementById('visitorTableBody');
+            const row = document.createElement('tr');
+
+            Object.values(visitor).forEach(value => {
+                const cell = document.createElement('td');
+                cell.textContent = value;
+                row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+        }
+
+        function loadVisitors() {
+            const visitors = JSON.parse(localStorage.getItem('visitors')) || [];
+            visitors.forEach(addVisitorToTable);
+        }
+
+        // Load existing visitors when the page loads
+        window.onload = loadVisitors;
+    </script>
+</body>
+</html>
